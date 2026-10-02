@@ -3,7 +3,7 @@ title: "MODELOS DISCRETOS"
 subtitle: "TALLER No 1"  # Subtítulo del documento
 date: today  # Fecha actual en formato español
 author:  # Información sobre los autores
-  - name: Dagoberto Salgado Horta <br> Marina Garcia <br> Juanito Perez # Nombres de los autores, separados por <br> para salto de línea en HTML
+  - name: Dagoberto Salgado Horta # Nombres de los autores, separados por <br> para salto de línea en HTML
     affiliation: "Escuela Superior de Administración Pública"  # Afiliación de los autores (nombre de la universidad)
     affiliation-url: "https://www.esap.edu.co/"  # URL que lleva a la página web de la universidad
 title-block-banner: "#5fb9e3"  # Color del banner de título en formato hexadecimal
@@ -56,7 +56,7 @@ knitr:
 </style>
 ```
 
-# .Activar Paquetes
+# .Activar
 
 ```{r}
 # Verificar, instalar y activar el paquete "tidyverse"
