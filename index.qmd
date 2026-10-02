@@ -1,0 +1,268 @@
+---
+title: "MODELOS DISCRETOS"  
+subtitle: "TALLER No 1"  # Subtítulo del documento
+date: today  # Fecha actual en formato español
+author:  # Información sobre los autores
+  - name: Dagoberto Salgado Horta <br> Marina Garcia <br> Juanito Perez # Nombres de los autores, separados por <br> para salto de línea en HTML
+    affiliation: "Escuela Superior de Administración Pública"  # Afiliación de los autores (nombre de la universidad)
+    affiliation-url: "https://www.esap.edu.co/"  # URL que lleva a la página web de la universidad
+title-block-banner: "#5fb9e3"  # Color del banner de título en formato hexadecimal
+lang: es  # Idioma del documento, en este caso en español
+format:
+  html:  # Formato de salida en HTML
+    page-layout: full  # Configura el diseño de la página para usar el ancho completo
+    fontsize: 16pt  # Tamaño de la fuente del documento (16 puntos)
+    toc: true  # Activa la tabla de contenido
+    toc-location: right  # Ubicación de la tabla de contenido (a la izquierda)
+    number-sections: true  # Activa la numeración de las secciones
+    code-fold: true  # Permite ocultar el código, mostrando solo un resumen con "Ver código"
+    code-summary: "Ver código"  # El texto mostrado para los resúmenes de código oculto
+    html-math-method: katex  # Usa Katex para representar las fórmulas matemáticas en HTML
+    smooth-scroll: true  # Activa el desplazamiento suave al navegar por la página
+    link-external-icon: true  # Muestra un ícono en los enlaces externos
+    link-external-newwindow: true  # Los enlaces externos se abren en una nueva ventana
+    citations-hover: true  # Activa el efecto hover (desplegar) en las citas
+    footnotes-hover: true  # Activa el efecto hover (desplegar) en las notas al pie
+    theme: "Dark"  # Opción de tema alternativo con mayor contraste
+    highlight-style: "Monokai"  # Resaltado de código con contraste
+    code-overflow: "scroll"  # Controla desbordamiento de código en pantallas pequeñas
+    text-align: justify  # Alineación justificada para el texto
+    color: "#333333"  # Color del texto (gris oscuro para mejorar la legibilidad)
+    link-color: "#3892f8"  # Color de los enlaces (azul)
+    heading-color: "#3892f8"  # Color de los encabezados (azul)
+editor: visual  # Usa el editor visual para la creación del documento en RStudio
+knitr:
+  opts_chunk:  # Opciones predeterminadas para los bloques de código (chunks) de R
+    message: false  # Mostrar mensajes generados por el código
+    warning: false  # Mostrar advertencias si es necesario
+    fig.align: "center"  # Alinea las figuras generadas al centro
+    fig.width: 10  # Ajusta el tamaño de las figuras a 6 unidades
+    fig.height: 6  # Ajusta la altura de las figuras a 6 unidades
+    out.width: "90%"  # Asegura que las figuras se adapten al 70% del ancho disponible
+---
+
+```{=html}
+<div style="position: absolute; top: 10px; right: 10px;">
+  <img src="Logo.jpg" alt="Logo Universidad del Tolima" style="width: 200px; height: auto;">
+</div>
+```
+
+```{=html}
+<style type="text/css">
+  body {
+    font-size: 120%;
+    text-align: justify;
+  }
+</style>
+```
+
+# .Activar Paquetes
+
+```{r}
+# Verificar, instalar y activar el paquete "tidyverse"
+if (!require(tidyverse)) {
+  install.packages("tidyverse")
+}
+library(tidyverse)
+
+# Verificar, instalar y activar el paquete "kableExtra"
+if (!require(kableExtra)) {
+  install.packages("kableExtra")
+}
+library(kableExtra)
+
+
+# Verificar, instalar y activar el paquete "dplyr"
+if (!require(dplyr)) {
+  install.packages("dplyr")
+}
+library(dplyr)
+```
+
+# .Distribución Binomial
+
+Casi siempre que un investigador se pregunta por la proporción de individuos que verifican una cierta característica dicotómica (estar enfermo o no, ser varón o no, etc.) subyace en el problema una distribución Binomial. Si de una población se toma una muestra de tamaño n y se anota el número X de individuos de ella que sí verifican la característica, entonces la variable aleatoria X sigue **distribución Binomial**. Asociada a si cada individuo sigue o no la característica de interés, aparece el término probabilidad/proporción (p) que denota la probabilidad de que el individuo presente la característica o la proporción de individuos que presentan la característica en la población. En consecuencia, esta distribución que se representa como B(n, p), puede verse como el número de éxitos en n repeticiones del experimento con probabilidad p, donde el éxito sería sí se verifica la condición y el experimento sería el hecho de comprobar si el individuo cumple la característica en cuestión. Con respecto al cálculo de probabilidades de una variable aleatoria con $X \sim \text{Bin}(n, \pi)$ distribución **Binomial**, en R se distinguen cuatro funciones:
+
+$$f(x; n, \pi) = \left\{
+\begin{array}{ll}
+\binom{n}{x} \pi^x (1 - \pi)^{n - x} & \text{si } x = 0, 1, \dots, n; \\
+0 & \text{en otro caso.}
+\end{array}
+\right.$$
+
+## .Ejercicios
+
+De acuerdo con un estudio publicado por un grupo de sociólogos de la Universidad de Massachusetts, aproximadamente 65% de los consumidores de Valium en el estado de Massachusetts empezaron a consumirlo a causa de problemas psicológicos. Calcule la probabilidad de que entre los siguientes 10 consumidores entrevistados de este estado:
+
+A. Exactamente 5 comenzaron a consumir Valium por problemas psicológicos.
+
+B. Al menos 6 comenzaron a consumir Valium por problemas psicológicos.
+
+```{r}
+n <- 10
+p <- 0.65
+x <- 0:n
+fx <- round(dbinom(x, n, p),4)
+Fx <- round(cumsum(fx),4)
+df = data.frame(x, fx, Fx)
+Form.Basic <- c("striped", "bordered", "hover", "condensed", "responsive")
+kable(df, align = "c") %>% 
+  kable_styling("striped", full_width = F) %>%
+  column_spec(1, bold = T) %>%
+  row_spec(0:11, bold = T, color = "#0d0d0d", background = "#eecafc")
+```
+
+**Graficas**
+
+::: panel-tabset
+## F. PROBABILIDAD
+
+```{r}
+df_1 <- data.frame(x = x, fx = fx, xend = x, fxend = 0)
+
+ggplot(df_1, aes(x = x, y = fx)) +
+  geom_segment(aes(xend = xend, yend = fxend), color = "#b349f5", size = 1) +
+  geom_point(color = "#02b8fa", size = 2) +
+  labs(title = "Función de probabilidad binomial",
+       x = "x",
+       y = "f(x)")
+```
+
+## F. DISTRIBUCIÓN
+
+```{r}
+df_2 <- data.frame(x = x, Fx = Fx)
+
+ggplot(df_2, aes(x = x, y = Fx)) +
+  geom_step(color = "#e149f5", size = 1) +
+  geom_point(color = "#49f5ec", size = 2) +
+  labs(title = "Función de distribución binomial",
+       x = "x",
+       y = "F(X)")
+```
+:::
+
+**solución a los incisos**
+
+::: panel-tabset
+## Inciso A
+
+```{r}
+round(dbinom(5,size=n,prob=p),4)
+```
+
+La probabilidad de que exactamente 3 consumidores de Valium empezaron a consumir por problemas psicológicos es del 15.36%
+
+## Inciso B
+
+```{r}
+round(pbinom(5,size=n,prob=p, lower.tail=FALSE),4)
+```
+:::
+
+
+**Grafica inciso A**
+
+```{r}
+rango = 0:n
+df_3 = data.frame(x = rango, y = dbinom(rango, size=n, prob=p))
+ggplot(df_3, aes(x = x, y = y, fill=factor(ifelse(x==5,"Valor","Resto")))) +
+geom_bar(stat = "identity",width = 0.25) + xlab("x") + ylab("Cuantía") +
+ggtitle("Distribución Binomial") +
+scale_fill_manual(name = "", values=c("#b349f5","#02b8fa")) + theme_bw()
+```
+
+
+
+**Grafica inciso B**
+
+```{r}
+ggplot(df_3, aes(x = x, y = y, fill=factor(ifelse(x>5,"Valor","Resto")))) +
+geom_bar(stat = "identity",width = 0.25) + xlab("x") + ylab("Cuantía") +
+ggtitle("Distribución Binomial") +
+scale_fill_manual(name = "", values=c("#b349f5","#02b8fa")) + theme_bw()
+```
+
+Un gobierno local ha implementado una campaña para incentivar la participación ciudadana en las audiencias públicas. Se sabe que aproximadamente el 70% de los ciudadanos que son invitados a participar, efectivamente lo hacen. El número total de ciudadanos invitados a la próxima audiencia será de 12 personas.
+
+Considerando que el evento sigue una distribución binomial, donde el éxito es que un ciudadano participe en la audiencia y el fracaso es que no participe, responde a los siguientes incisos:
+
+¿Cuál es la probabilidad de que exactamente 9 ciudadanos participen en la audiencia pública?
+
+¿Cuál es la probabilidad de que al menos 8 ciudadanos participen en la audiencia pública?
+
+¿Cuál es la probabilidad de que como máximo 6 ciudadanos participen en la audiencia pública?
+
+¿Cuál es la probabilidad de que entre 7 y 10 ciudadanos (inclusive) participen en la audiencia pública?
+
+
+
+```{r}
+# Definir los parámetros del ejercicio
+n <- 12  # Número de ciudadanos invitados
+p <- 0.70  # Probabilidad de participación
+x <- 0:n  # Número de éxitos posibles (de 0 a 12)
+fx <- round(dbinom(x, n, p), 4)  # Calcular las probabilidades de éxito exacto
+Fx <- round(cumsum(fx), 4)  # Calcular la probabilidad acumulada
+
+# Crear un data frame con los resultados
+df <- data.frame(x, fx, Fx)
+
+
+
+# Generar la tabla con el estilo deseado
+kable(df, align = "c") %>% 
+  kable_styling("striped", full_width = F) %>%
+  column_spec(1, bold = T) %>%
+  row_spec(0:13, bold = T, color = "#0d0d0d", background = "#eecafc")
+
+```
+
+```{r}
+df_1 <- data.frame(x = x, fx = fx, xend = x, fxend = 0)
+
+ggplot(df_1, aes(x = x, y = fx)) +
+  geom_segment(aes(xend = xend, yend = fxend), color = "#b349f5", size = 1) +
+  geom_point(color = "#02b8fa", size = 2) +
+  labs(title = "Función de probabilidad binomial",
+       x = "x",
+       y = "f(x)")
+```
+
+```{r}
+# Definir los parámetros del ejercicio
+n <- 12  # Número de ciudadanos invitados
+p <- 0.70  # Probabilidad de participación
+
+# Calcular la probabilidad de que como máximo 6 ciudadanos participen
+probabilidad_max_6 <- round(pbinom(6, size = n, prob = p), 4)
+
+# Mostrar el resultado
+cat("La probabilidad de que como máximo 6 ciudadanos participen en la audiencia pública es: ", probabilidad_max_6, "\n")
+
+```
+
+```{r}
+# Parámetros del ejercicio
+n <- 10        # Número de solicitudes en la muestra
+p <- 0.80      # Probabilidad de que una solicitud esté completa y sin errores
+x <- 0:n       # Rango de posibles resultados (de 0 a 10 solicitudes)
+
+# Calculamos las probabilidades
+fx <- round(dbinom(x, n, p), 4)  # Probabilidad de exactamente 'x' éxitos
+Fx <- round(cumsum(fx), 4)       # Probabilidad acumulada de 'x' o menos éxitos
+
+# Creamos el dataframe para la tabla
+df <- data.frame(x, fx, Fx)
+
+# Cargamos las librerías necesarias para la tabla (si no están instaladas, se deben instalar con install.packages())
+library(knitr)
+library(kableExtra)
+
+# Generamos la tabla con el estilo deseado
+kable(df, align = "c", caption = "Tabla de Distribución Binomial (n=10, p=0.80)") %>%
+  kable_styling("striped", full_width = F) %>%
+  column_spec(1, bold = T) %>%
+  row_spec(0:11, bold = T, color = "#0d0d0d", background = "#eecafc")
+```
+
